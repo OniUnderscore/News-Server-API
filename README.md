@@ -11,3 +11,7 @@ PGDATABASE=nc_news\
 respectively.
 
 Refer to .env-example if needed.
+
+## Endpoints:
+
+A list of endpoints, and a description of their use, can be found by accessing the **/api** endpoint, using a GET method.
