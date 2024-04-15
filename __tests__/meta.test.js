@@ -19,7 +19,6 @@ describe("GET /api", () => {
       .expect(200)
       .then(({ body }) => {
         const { endpoints } = body;
-        console.log(endpoints);
         expect(typeof endpoints).toEqual("string");
       });
   });

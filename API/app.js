@@ -2,13 +2,15 @@ const db = require("../db/connection");
 const express = require("express");
 const { getTopics } = require("./controllers/topic-controller");
 const { getAPI } = require("./controllers/meta-controller");
+const { getArticle } = require("./controllers/article-controller");
 
 const app = express();
-app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
 app.get("/api", getAPI);
+
+app.get("/api/articles/:article_id", getArticle);
 
 app.all("*", (req, res, next) => {
   res.status(400).send({ msg: "Bad request" });
