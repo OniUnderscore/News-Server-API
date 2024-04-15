@@ -1,3 +1,13 @@
-# Northcoders News API
+# News Site API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+A _reddit-esque_ news site API, for the handling of a messageboard where users can post, and comment on articles about various topics of their choice.
+
+## Local Setup:
+
+Use of this repo requires a local _.env.test_ and _.env.development_ file, containing either:\
+PGDATABASE=nc_news_test\
+or\
+PGDATABASE=nc_news\
+respectively.
+
+Refer to .env-example if needed.
