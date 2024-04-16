@@ -8,3 +8,14 @@ exports.fetchComments = (article_id) => {
     [article_id]
   );
 };
+
+exports.saveComment = (article_id, comment) => {
+  const username = comment.username;
+  const body = comment.body;
+  return db.query(
+    `INSERT INTO comments(author, body, article_id)
+  VALUES ($1,$2,$3)
+  RETURNING *`,
+    [username, body, article_id]
+  );
+};

@@ -99,3 +99,102 @@ describe("GET /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  const content = {
+    username: "butter_bridge",
+    body: "Um, actually I'll think you'll find that that's HANLON's razor, not Occam's",
+  };
+  describe("Functionality", () => {
+    test("When given a valid body, should return the comment object that has been posted ", () => {
+      const output = {
+        comment_id: 19,
+        body: "Um, actually I'll think you'll find that that's HANLON's razor, not Occam's",
+        article_id: 1,
+        author: "butter_bridge",
+        votes: 0,
+        created_at: expect.any(String),
+      };
+      return request(app)
+        .post("/api/articles/1/comments", content)
+        .send(content)
+        .expect(201)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toEqual(output);
+        });
+    });
+
+    test("After a new comment is posted, it should be the newest comment in the database", () => {
+      return request(app)
+        .post("/api/articles/1/comments", content)
+        .send(content)
+        .then(({ body }) => {
+          const { comment } = body;
+          return Promise.all([
+            request(app).get("/api/articles/1/comments"),
+            comment,
+          ]);
+        })
+        .then(([{ body }, comment]) => {
+          const { comments } = body;
+          expect(comments[0]).toEqual(comment);
+        });
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("If given an article_id that is malformed, should return an error", () => {
+      return request(app)
+        .post("/api/articles/one/comments", content)
+        .send(content)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Invalid ID");
+        });
+    });
+
+    test("If given an article_id that is valid, BUT doesn't exist, should return an error", () => {
+      return request(app)
+        .post("/api/articles/78897/comments", content)
+        .send(content)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Article Not Found");
+        });
+    });
+
+    test("If given a malformed body in the quest, should return an error", () => {
+      const wrongContent = {
+        username: "butter_bridge",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments", content)
+        .send(wrongContent)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Malformed Body");
+        });
+    });
+
+    test("If given a comment by a user that does not exist should return an error", () => {
+      const wrongContent = {
+        username: "xXParadoXx",
+        body: "If I don't exist how can I be posting this?",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments", content)
+        .send(wrongContent)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("User does not exist");
+        });
+    });
+  });
+});
