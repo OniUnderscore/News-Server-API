@@ -1,5 +1,5 @@
 const { verifyID } = require("../models/meta-model");
-const { fetchArticle } = require("../models/article-model");
+const { fetchArticle, fetchArticles } = require("../models/article-model");
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -19,4 +19,11 @@ exports.getArticle = (req, res, next) => {
       res.status(200).send({ article });
     })
     .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  return fetchArticles().then(({ rows }) => {
+    const articles = rows;
+    res.status(200).send({ articles });
+  });
 };
