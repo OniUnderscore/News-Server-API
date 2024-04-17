@@ -11,6 +11,13 @@ const {
   getComments,
   postComment,
 } = require("./controllers/comment-controller");
+const {
+  invalidID,
+  badBody,
+  noUser,
+  customError,
+  internalError,
+} = require("./middleware/errorhandling");
 
 const app = express();
 app.use(express.json());
@@ -33,36 +40,14 @@ app.all("*", (req, res, next) => {
   res.status(400).send({ msg: "Bad request" });
 });
 
-app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
-    res.status(400).send({ msg: "Invalid ID" });
-  }
-  next(err);
-});
+app.use(invalidID);
 
-app.use((err, req, res, next) => {
-  if (err.code === "23502") {
-    res.status(400).send({ msg: "Malformed Body" });
-  }
-  next(err);
-});
+app.use(badBody);
 
-app.use((err, req, res, next) => {
-  if (err.code === "23503") {
-    res.status(400).send({ msg: "User does not exist" });
-  }
-  next(err);
-});
+app.use(noUser);
 
-app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
-    res.status(err.status).send({ msg: err.msg });
-  }
-  next(err);
-});
+app.use(customError);
 
-app.use((err, req, res, next) => {
-  res.status(500).send({ msg: "internal server error" });
-});
+app.use(internalError);
 
 module.exports = app;
