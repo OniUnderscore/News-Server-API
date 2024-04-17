@@ -1,5 +1,9 @@
 const { fetchArticle } = require("../models/article-model");
-const { fetchComments, saveComment } = require("../models/comment-model");
+const {
+  fetchComments,
+  saveComment,
+  deleteComment,
+} = require("../models/comment-model");
 
 exports.getComments = (req, res, next) => {
   const { article_id } = req.params;
@@ -30,6 +34,18 @@ exports.postComment = (req, res, next) => {
     .then(({ rows }) => {
       const comment = rows[0];
       res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  return deleteComment(comment_id)
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ status: 404, msg: "Comment Not Found" });
+
+      res.send(204);
     })
     .catch(next);
 };

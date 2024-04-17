@@ -10,6 +10,7 @@ const {
 const {
   getComments,
   postComment,
+  deleteComment,
 } = require("./controllers/comment-controller");
 const {
   invalidID,
@@ -35,6 +36,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("*", (req, res, next) => {
   res.status(400).send({ msg: "Bad request" });
