@@ -104,5 +104,11 @@
       }
     },
     "reqBodyFormat": { "inc_votes": 1 }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deltes a comment from the database if present",
+    "queries": [],
+    "exampleResponse": {},
+    "reqBodyFormat": {}
   }
 }

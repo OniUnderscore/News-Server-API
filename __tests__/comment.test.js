@@ -198,3 +198,47 @@ describe("POST /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  describe("Functionality", () => {
+    test("When called, endpoint should return a 204 status with no content", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+        });
+    });
+    test("After being called, comments table should no longer contain the entry", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .then(() => {
+          return db.query("SELECT * FROM comments WHERE comment_id = 1");
+        })
+        .then(({ rows }) => {
+          expect(rows).toEqual([]);
+        });
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("Should return an error if comment_id is malformed", () => {
+      return request(app)
+        .delete("/api/comments/one")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Invalid ID");
+        });
+    });
+    test("Should return an error if no comment with the ID exists", () => {
+      return request(app)
+        .delete("/api/comments/10101")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Comment Not Found");
+        });
+    });
+  });
+});
