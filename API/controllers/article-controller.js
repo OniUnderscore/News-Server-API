@@ -1,5 +1,9 @@
 const { verifyID } = require("../models/meta-model");
-const { fetchArticle, fetchArticles } = require("../models/article-model");
+const {
+  fetchArticle,
+  fetchArticles,
+  updateVotes,
+} = require("../models/article-model");
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -26,4 +30,28 @@ exports.getArticles = (req, res, next) => {
     const articles = rows;
     res.status(200).send({ articles });
   });
+};
+
+exports.patchArticle = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+
+  if (isNaN(Number(inc_votes))) next({ status: 400, msg: "Malformed Body" });
+
+  return fetchArticle(article_id)
+    .then(({ rows }) => {
+      return new Promise((resolve, reject) => {
+        if (rows.length === 0)
+          reject({ status: 404, msg: "Article Not Found" });
+        else resolve(rows[0]);
+      });
+    })
+    .then((article) => {
+      return updateVotes(article, inc_votes);
+    })
+    .then(({ rows }) => {
+      const article = rows[0];
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
