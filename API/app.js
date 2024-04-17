@@ -2,7 +2,11 @@ const db = require("../db/connection");
 const express = require("express");
 const { getTopics } = require("./controllers/topic-controller");
 const { getAPI } = require("./controllers/meta-controller");
-const { getArticle, getArticles } = require("./controllers/article-controller");
+const {
+  getArticle,
+  getArticles,
+  patchArticle,
+} = require("./controllers/article-controller");
 const {
   getComments,
   postComment,
@@ -22,6 +26,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.patch("/api/articles/:article_id", patchArticle);
 
 app.all("*", (req, res, next) => {
   res.status(400).send({ msg: "Bad request" });

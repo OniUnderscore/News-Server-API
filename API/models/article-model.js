@@ -15,3 +15,14 @@ exports.fetchArticles = () => {
   ON articles.article_id = comments.article_id
   GROUP BY articles.article_id;`);
 };
+
+exports.updateVotes = (article, inc_votes) => {
+  article.votes += inc_votes;
+  return db.query(
+    `UPDATE articles
+  SET votes = $1
+  WHERE article_id = $2
+  RETURNING *`,
+    [article.votes, article.article_id]
+  );
+};

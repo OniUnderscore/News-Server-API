@@ -36,7 +36,7 @@
     },
     "reqBodyFormat": {}
   },
-  "/api/articles/:article_id": {
+  "GET /api/articles/:article_id": {
     "description": "serves a single article matching the provided ID",
     "queries": [],
     "exampleResponse": {
@@ -53,7 +53,7 @@
     },
     "reqBodyFormat": {}
   },
-  "/api/articles/:article_id/comments": {
+  "GET /api/articles/:article_id/comments": {
     "description": "Serves all comments posted to a specified Article",
     "queries": [],
     "exampleResponse": {
@@ -69,5 +69,40 @@
       ]
     },
     "reqBodyFormat": {}
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Posts a new comment to the database, and returns it",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 2,
+        "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        "article_id": 1,
+        "author": "butter_bridge",
+        "votes": 14,
+        "created_at": "2020-10-31T03:03:00.000Z"
+      }
+    },
+    "reqBodyFormat": {
+      "username": "butter_bridge",
+      "body": "Um, actually I'll think you'll find that that's HANLON's razor, not Occam's"
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "Posts an article in the database, and returns it",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 101,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    },
+    "reqBodyFormat": { "inc_votes": 1 }
   }
 }

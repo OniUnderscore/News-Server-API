@@ -151,5 +151,131 @@ describe("05 GET /api/articles", () => {
         });
     });
   });
-  //The only error that should occur here is if the endpoint doesn't exist, which has already been tested during GET /api/topics
+});
+
+describe("08 PATCH /api/articles/:article_id", () => {
+  describe("Functionality", () => {
+    test("When given an object with an inc_votes key, should modify votes by tha value, and return the new article object", () => {
+      const body = { inc_votes: 1 };
+
+      const output = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 101,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(body)
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(output);
+        });
+    });
+
+    test("The equivalent row in the database should also return the updated object", () => {
+      const body = { inc_votes: 1 };
+
+      const output = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: new Date("2020-07-09T20:11:00.000Z"),
+        votes: 101,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(body)
+        .expect(200)
+        .then(() => {
+          return db.query("SELECT * FROM articles WHERE article_id = 1");
+        })
+        .then(({ rows }) => {
+          expect(rows[0]).toEqual(output);
+        });
+    });
+
+    test("The call should also function if the change is to remove votes", () => {
+      const body = { inc_votes: -1 };
+
+      const output = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 99,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(body)
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(output);
+        });
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("If Article ID is malformed, present an error", () => {
+      const body = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/one")
+        .send(body)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Invalid ID");
+        });
+    });
+    test("If article does not exist, an error should be presented", () => {
+      const body = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/1986")
+        .send(body)
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Article Not Found");
+        });
+    });
+
+    test("If inc_votes is malformed return an error", () => {
+      const body = { inc_votes: "one" };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(body)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Malformed Body");
+        });
+    });
+
+    test("If inc_votes is not present, return an error", () => {
+      const body = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(body)
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Malformed Body");
+        });
+    });
+  });
 });
