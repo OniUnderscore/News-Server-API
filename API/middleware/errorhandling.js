@@ -1,5 +1,4 @@
 exports.invalidID = (err, req, res, next) => {
-  console.log("🚀 ~ err:", err);
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid ID" });
   }
