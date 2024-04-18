@@ -288,6 +288,7 @@ describe("10 GET /api/articles?topic=*", () => {
         .expect(200)
         .then(({ body }) => {
           const { articles } = body;
+          expect(articles.length).toEqual(12);
           articles.forEach((article) => {
             expect(article).toEqual(
               expect.objectContaining({
