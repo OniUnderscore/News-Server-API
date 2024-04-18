@@ -279,3 +279,24 @@ describe("08 PATCH /api/articles/:article_id", () => {
     });
   });
 });
+
+describe("10 GET /api/articles?topic=*", () => {
+  describe("Functionality", () => {
+    test("when provided with a topic query, the returned Articles should only be of that topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toEqual(12);
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                topic: "mitch",
+              })
+            );
+          });
+        });
+    });
+  });
+});

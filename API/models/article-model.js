@@ -8,12 +8,19 @@ exports.fetchArticle = (article_id) => {
   );
 };
 
-exports.fetchArticles = () => {
-  return db.query(`SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comment_id)::INT AS comment_count
+exports.fetchArticles = (topic) => {
+  let queryString = `SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comment_id)::INT AS comment_count
   FROM articles
   LEFT JOIN comments
-  ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id;`);
+  ON articles.article_id = comments.article_id`;
+
+  if (topic) {
+    queryString += " WHERE topic = $1 GROUP BY articles.article_id;";
+    return db.query(queryString, [topic]);
+  } else {
+    queryString += " GROUP BY articles.article_id;";
+    return db.query(queryString);
+  }
 };
 
 exports.updateVotes = (article, inc_votes) => {
