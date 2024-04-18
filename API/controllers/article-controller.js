@@ -4,6 +4,7 @@ const {
   fetchArticles,
   updateVotes,
 } = require("../models/article-model");
+const { query } = require("../../db/connection");
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -26,10 +27,14 @@ exports.getArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  return fetchArticles().then(({ rows }) => {
-    const articles = rows;
-    res.status(200).send({ articles });
-  });
+  const { topic } = req.query;
+  4;
+  return fetchArticles(topic)
+    .then(({ rows }) => {
+      const articles = rows;
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
 exports.patchArticle = (req, res, next) => {
