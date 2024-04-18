@@ -19,6 +19,7 @@ const {
   customError,
   internalError,
 } = require("./middleware/errorhandling");
+const { getUsers } = require("./controllers/user-controller");
 
 const app = express();
 app.use(express.json());
@@ -38,6 +39,8 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers);
 
 app.all("*", (req, res, next) => {
   res.status(400).send({ msg: "Bad request" });
