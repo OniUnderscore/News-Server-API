@@ -63,7 +63,7 @@ describe("04 GET /api/articles/:article_id", () => {
         .expect(200)
         .then(({ body }) => {
           const { article } = body;
-          expect(article).toEqual(output);
+          expect(article).toEqual(expect.objectContaining(output));
         });
     });
   });
@@ -296,6 +296,52 @@ describe("10 GET /api/articles?topic=*", () => {
               })
             );
           });
+        });
+    });
+  });
+});
+
+describe("11 GET api/articles/:article_id feature request - comment count", () => {
+  describe("Functionality", () => {
+    test("Returned article object should contain a comment_count property", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(
+            expect.objectContaining({
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+    });
+
+    test("Returned articles comment_count property with expected value", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(
+            expect.objectContaining({
+              comment_count: 11,
+            })
+          );
+        });
+    });
+
+    test("If article has no comments, should return a comment_count of 0", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body }) => {
+          const { article } = body;
+          expect(article).toEqual(
+            expect.objectContaining({
+              comment_count: 0,
+            })
+          );
         });
     });
   });
