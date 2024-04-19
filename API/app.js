@@ -43,7 +43,7 @@ app.delete("/api/comments/:comment_id", deleteComment);
 app.get("/api/users", getUsers);
 
 app.all("*", (req, res, next) => {
-  res.status(400).send({ msg: "Bad request" });
+  res.status(404).send({ msg: "Route does not Exist" });
 });
 
 app.use(invalidID);

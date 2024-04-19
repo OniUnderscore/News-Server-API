@@ -24,6 +24,7 @@ describe("01 GET /api/topics", () => {
         .then(({ body }) => {
           const { topics } = body;
           expect(topics.constructor).toEqual(Array);
+          expect(topics.length).toEqual(3);
           topics.forEach((topic) => {
             expect(topic.constructor).toEqual(Object);
           });
@@ -35,6 +36,7 @@ describe("01 GET /api/topics", () => {
         .get("/api/topics")
         .then(({ body }) => {
           const { topics } = body;
+          expect(topics.length).toEqual(3);
           topics.forEach;
           (topic) => {
             expect(typeof topic.slug).toEqual("string");
@@ -63,34 +65,15 @@ describe("01 GET /api/topics", () => {
     });
   });
 
-  describe("Error Handling", () => {
-    test("If the topics table is empty, should return a 404 error", () => {
-      return db
-        .query("DROP TABLE IF EXISTS comments, articles, users;")
-        .then(() => {
-          return db.query("TRUNCATE TABLE topics;");
-        })
-        .then(() => {
-          return request(app)
-            .get("/api/topics")
-            .expect(404)
-            .then(({ body }) => {
-              const { msg } = body;
-              expect(msg).toEqual("Table is Empty");
-            });
+  describe("General Errors", () => {
+    test("If endpoint does not exist, return a 404 error", () => {
+      return request(app)
+        .get("/api/notanendpoint")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Route does not Exist");
         });
     });
-  });
-});
-
-describe("General Errors", () => {
-  test("If endpoint does not exist, return a 400 error", () => {
-    return request(app)
-      .get("/api/notanendpoint")
-      .expect(400)
-      .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toEqual("Bad request");
-      });
   });
 });

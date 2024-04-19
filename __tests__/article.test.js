@@ -74,7 +74,7 @@ describe("04 GET /api/articles/:article_id", () => {
         .get("/api/articles/notavalidID")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toEqual("ID is Malformed");
+          expect(body.msg).toEqual("Invalid Integer Assignment");
         });
     });
     test("If ID is valid, but has no content associated with it, should return a 404", () => {
@@ -82,7 +82,7 @@ describe("04 GET /api/articles/:article_id", () => {
         .get("/api/articles/6565")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toEqual("Article not Found");
+          expect(body.msg).toEqual("Not Found");
         });
     });
   });
@@ -239,7 +239,7 @@ describe("08 PATCH /api/articles/:article_id", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Invalid ID");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
     test("If article does not exist, an error should be presented", () => {
@@ -250,7 +250,7 @@ describe("08 PATCH /api/articles/:article_id", () => {
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Article Not Found");
+          expect(msg).toEqual("Not Found");
         });
     });
 
@@ -262,7 +262,7 @@ describe("08 PATCH /api/articles/:article_id", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Malformed Body");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
 
@@ -274,7 +274,7 @@ describe("08 PATCH /api/articles/:article_id", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Malformed Body");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
   });
@@ -296,6 +296,31 @@ describe("10 GET /api/articles?topic=*", () => {
               })
             );
           });
+        });
+    });
+  });
+
+  describe("Error Handling", () => {
+    // - `topic` that is not in the database
+    //`topic` that exists but does not have any articles associated with it
+
+    test("If topic is not in the Database, return an error", () => {
+      return request(app)
+        .get("/api/articles?topic=mirtch")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Not Found");
+        });
+    });
+
+    test("If no articles exist for a topic, return an error ", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Not Found");
         });
     });
   });

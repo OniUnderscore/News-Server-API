@@ -85,7 +85,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Invalid ID");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
     test("Should return an error if the article ID IS valid, but the article does not exist", () => {
@@ -94,7 +94,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         .expect(404)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Article Not Found");
+          expect(msg).toEqual("Not Found");
         });
     });
   });
@@ -151,7 +151,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Invalid ID");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
 
@@ -228,7 +228,7 @@ describe("DELETE /api/comments/:comment_id", () => {
         .expect(400)
         .then(({ body }) => {
           const { msg } = body;
-          expect(msg).toEqual("Invalid ID");
+          expect(msg).toEqual("Invalid Integer Assignment");
         });
     });
     test("Should return an error if no comment with the ID exists", () => {

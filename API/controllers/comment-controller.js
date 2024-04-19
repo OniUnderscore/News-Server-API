@@ -4,14 +4,15 @@ const {
   saveComment,
   deleteComment,
 } = require("../models/comment-model");
+const { lengthCheck } = require("../models/meta-model");
 
 exports.getComments = (req, res, next) => {
   const { article_id } = req.params;
   return fetchArticle(article_id)
     .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article Not Found" });
-      }
+      return lengthCheck(rows);
+    })
+    .then((rows) => {
       return fetchComments(article_id);
     })
     .then(({ rows }) => {
