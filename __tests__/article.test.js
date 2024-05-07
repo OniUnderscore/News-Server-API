@@ -371,3 +371,53 @@ describe("11 GET api/articles/:article_id feature request - comment count", () =
     });
   });
 });
+
+describe("15 - sorting queries", () => {
+  describe("Functionality", () => {
+    test("When given nothing, artciles should sorted by created_at asc", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeSortedBy("created_at", {
+            descending: false,
+          });
+        });
+    });
+
+    test("When given a sort_by and an order, should return a correctly sorted object", () => {
+      return request(app)
+        .get("/api/articles?sort_by=topic&order=desc")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles).toBeSortedBy("topic", {
+            descending: true,
+          });
+        });
+    });
+  });
+
+  describe("Error handling", () => {
+    test('If Order is not "asc" or "desc" should throw an error', () => {
+      return request(app)
+        .get("/api/articles?order=left")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Invalid Query");
+        });
+    });
+
+    test("If Sort_by is not a valid column should throw an error", () => {
+      return request(app)
+        .get("/api/articles?sort_by=random")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toEqual("Invalid Query");
+        });
+    });
+  });
+});
