@@ -12,6 +12,7 @@ const {
   getComments,
   postComment,
   deleteComment,
+  patchComment,
 } = require("./controllers/comment-controller");
 const {
   invalidID,
@@ -39,6 +40,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.patch("/api/comments/:comment_id", patchComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 

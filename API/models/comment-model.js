@@ -9,6 +9,14 @@ exports.fetchComments = (article_id) => {
   );
 };
 
+exports.fetchComment = (comment_id) => {
+  return db.query(
+    `SELECT * FROM comments
+  WHERE comment_id = $1`,
+    [comment_id]
+  );
+};
+
 exports.saveComment = (article_id, comment) => {
   const username = comment.username;
   const body = comment.body;
@@ -26,5 +34,16 @@ exports.deleteComment = (comment_id) => {
   WHERE comment_id = $1
   RETURNING *`,
     [comment_id]
+  );
+};
+
+exports.updateCommentVotes = (comment, inc_votes) => {
+  comment.votes += inc_votes;
+  return db.query(
+    `UPDATE comments
+  SET votes = $1
+  WHERE comment_id = $2
+  RETURNING *`,
+    [comment.votes, comment.comment_id]
   );
 };
