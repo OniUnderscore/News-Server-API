@@ -56,17 +56,15 @@ exports.deleteComment = (req, res, next) => {
 exports.patchComment = (req, res, next) => {
   const { inc_votes } = req.body;
   const { comment_id } = req.params;
-
   return fetchComment(comment_id)
     .then(({ rows }) => {
-      console.log(rows);
       return lengthCheck(rows);
     })
     .then(([comment]) => {
       return updateCommentVotes(comment, inc_votes);
     })
     .then(({ rows }) => {
-      const article = rows[0];
+      const comment = rows[0];
       res.status(200).send({ comment });
     })
     .catch(next);

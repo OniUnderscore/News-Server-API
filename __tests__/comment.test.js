@@ -242,3 +242,28 @@ describe("DELETE /api/comments/:comment_id", () => {
     });
   });
 });
+
+describe.skip("Patching comment votes", () => {
+  describe("Functionality", () => {
+    test("When given an object with an inc_votes key, should modify votes by tha value, and return the new article object", () => {
+      const body = { inc_votes: 1 };
+
+      const output = {
+        comment_id: 1,
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 16,
+        author: "butter_bridge",
+        article_id: 9,
+        created_at: 1586179020000,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(200)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toEqual(output);
+        });
+    });
+  });
+});
