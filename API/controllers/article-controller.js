@@ -21,10 +21,10 @@ exports.getArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { topic, order, sort_by } = req.query;
+  const { topic, order, sort_by, author } = req.query;
   return checkTopic(topic)
     .then(() => {
-      return fetchArticles(topic, order, sort_by);
+      return fetchArticles(topic, order, sort_by, author);
     })
     .then(({ rows }) => {
       return lengthCheck(rows);

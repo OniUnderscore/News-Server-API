@@ -11,7 +11,12 @@ exports.fetchArticle = (article_id) => {
   );
 };
 
-exports.fetchArticles = (topic, order = "asc", sort_by = "created_at") => {
+exports.fetchArticles = (
+  topic,
+  order = "asc",
+  sort_by = "created_at",
+  author
+) => {
   const validSorts = [
     "article_id",
     "author",
@@ -34,6 +39,10 @@ exports.fetchArticles = (topic, order = "asc", sort_by = "created_at") => {
   if (topic) {
     queryString += `
   WHERE topic = '${topic}'`;
+  }
+  if (author) {
+    queryString += `
+  WHERE author = '${author}'`;
   }
   queryString += `
   GROUP BY articles.article_id
