@@ -300,6 +300,23 @@ describe("10 GET /api/articles?topic=*", () => {
     });
   });
 
+  test("when provided with an author query, the returned Articles should only be by that author", () => {
+    return request(app)
+      .get("/api/articles?author=rogersop")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toEqual(3);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: "rogersop",
+            })
+          );
+        });
+      });
+  });
+
   describe("Error Handling", () => {
     // - `topic` that is not in the database
     //`topic` that exists but does not have any articles associated with it

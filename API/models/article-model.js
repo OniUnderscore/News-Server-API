@@ -39,15 +39,17 @@ exports.fetchArticles = (
   if (topic) {
     queryString += `
   WHERE topic = '${topic}'`;
-  }
-  if (author) {
+  } else if (author) {
     queryString += `
-  WHERE author = '${author}'`;
+  WHERE articles.author = '${author}'`;
   }
+
   queryString += `
   GROUP BY articles.article_id
   ORDER BY ${sort_by} ${order};
   `;
+
+  console.log(queryString);
 
   return db.query(queryString);
 };
