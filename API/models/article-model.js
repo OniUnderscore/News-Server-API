@@ -49,8 +49,6 @@ exports.fetchArticles = (
   ORDER BY ${sort_by} ${order};
   `;
 
-  console.log(queryString);
-
   return db.query(queryString);
 };
 
